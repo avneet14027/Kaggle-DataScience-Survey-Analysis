@@ -194,3 +194,89 @@ graph_Age<-ggplot(data=graph_age, aes(x=age, y=Number, fill=gender)) +
   ```
 ![altText](https://github.com/avneet14027/Kaggle-DataScience-Survey-Analysis/blob/master/plot_age_kagglers.png)
 
+
+#### Title fit
+Analysisng the title fit.
+
+```R
+df_lang <- df %>% filter(GenderSelect %in% c("Male","Female") & Age>=14 & TitleFit!="" & LanguageRecommendationSelect %in% c("R","Python","SQL","Java","C/C++/C#"))%>%droplevels()
+new_df_lang <- df_lang[,c(1,2,3,10,14)]
+
+ggplot(new_df_lang,aes(x=Age,fill=TitleFit))+
+  geom_histogram(bins=20)+
+  facet_wrap(~LanguageRecommendationSelect) + scale_fill_brewer(palette="Blues")
+
+```
+![altText](https://github.com/avneet14027/Kaggle-DataScience-Survey-Analysis/blob/master/plot_title_fit.png)
+
+
+#### Job Title word Cloud
+Word cloud of the prevalent job titles of people
+
+```R
+#Job title word cloud
+job_titles = subset(df, ,select=c("CurrentJobTitleSelect"))
+job_title<-with(job_titles,table(CurrentJobTitleSelect))
+df2<-as.data.frame(job_title)
+x<-levels(df2$CurrentJobTitleSelect)
+x<-x[-1]
+title_names<-c(x)
+
+library(wordcloud)
+library(tm)
+library(RColorBrewer)
+
+x<-wordcloud(words = title_names, freq = df2$Freq, max.words =100,min.freq=20,scale=c(4,.5), 
+             random.order = FALSE,rot.per=.5,vfont=c("sans serif","plain"),colors=palette())
+```
+
+![altText](https://github.com/avneet14027/Kaggle-DataScience-Survey-Analysis/blob/master/Rplot02_wordcloud.png)
+
+
+#### Gender wise programming language preferences
+
+```R
+#Gender wise programming language preferences
+
+prolang<-subset(df, ,select=c("GenderSelect","LanguageRecommendationSelect"))
+lang_table<-with(prolang,table(LanguageRecommendationSelect,GenderSelect))
+
+results_male=c()
+results_female=c()
+results_diff=c()
+results_non_binary=c()
+for(row in 2:nrow(lang_table)) {
+  for(col in 2:ncol(lang_table)) {
+    if(col==2){
+      #print(table_country_gender[row,col])
+      results_diff<<-append(results_diff,lang_table[row,col])
+      #print(results_diff)
+    }
+    if(col==3){
+      results_female<<-append(results_female,lang_table[row,col])
+    }
+    if(col==4){
+      results_male<<-append(results_male,lang_table[row,col])
+    }
+    if(col==5){
+      results_non_binary<<-append(results_non_binary,lang_table[row,col])
+    }
+  }
+}
+
+main<-c()
+main<-append(results_diff,results_female)
+main<-append(main,results_male)
+main<-append(main,results_non_binary)
+
+df2<-as.data.frame(table(df$LanguageRecommendationSelect))
+x<-levels(df2$Var1)
+x<-x[-1]
+lang_names<-c(x)
+graph_lang<- data.frame(gender=rep(c("A different Identity", "Female","Male","NonBinary or Other"), each=13),lang=lang_names,
+                       Number=main)
+graph_Lang<-ggplot(data=graph_lang, aes(x=lang, y=Number, fill=gender)) +
+  geom_bar(stat="identity",position=position_dodge()) + theme(text = element_text(size=9),axis.text.x = element_text(angle=90, hjust=1)) 
+```
+![altText](https://github.com/avneet14027/Kaggle-DataScience-Survey-Analysis/blob/master/plot_language.png)
+
