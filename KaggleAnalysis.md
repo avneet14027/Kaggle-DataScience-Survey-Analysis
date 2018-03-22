@@ -102,5 +102,6 @@ graph_country_gender<-ggplot(data=graph_country_wise, aes(x=countries, y=Number,
   geom_bar(stat="identity") + theme(text = element_text(size=8),axis.text.x = element_text(angle=90, hjust=1)) 
 ```
 
+![altText](https://github.com/avneet14027/Kaggle-DataScience-Survey-Analysis/blob/master/plot_countries_gender.png)
 
 
