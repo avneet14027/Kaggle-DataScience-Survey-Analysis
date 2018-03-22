@@ -105,3 +105,92 @@ graph_country_gender<-ggplot(data=graph_country_wise, aes(x=countries, y=Number,
 ![altText](https://github.com/avneet14027/Kaggle-DataScience-Survey-Analysis/blob/master/plot_countries_gender.png)
 
 
+### Distribution of employment status of various kagglers in relation to their gender
+
+```R
+df_employment = subset(df,,select=c("EmploymentStatus","GenderSelect"))
+table_employment_gender = with(df_employment,table(EmploymentStatus,GenderSelect))
+
+results_male=c()
+results_female=c()
+results_diff=c()
+results_non_binary=c()
+for(row in 2:nrow(table_employment_gender)) {
+  for(col in 2:ncol(table_employment_gender)) {
+    if(col==2){
+      #print(table_country_gender[row,col])
+      results_diff<<-append(results_diff,table_employment_gender[row,col])
+      #print(results_diff)
+    }
+    if(col==3){
+      results_female<<-append(results_female,table_employment_gender[row,col])
+    }
+    if(col==4){
+      results_male<<-append(results_male,table_employment_gender[row,col])
+    }
+    if(col==5){
+      results_non_binary<<-append(results_non_binary,table_employment_gender[row,col])
+    }
+  }
+}
+
+main<-c()
+main<-append(results_diff,results_female)
+main<-append(main,results_male)
+main<-append(main,results_non_binary)
+
+df2<-as.data.frame(table(df$EmploymentStatus))
+x<-levels(df2$Var1)
+x<-x[-1]
+emp_status_names<-c(x)
+graph_country_wise<- data.frame(gender=rep(c("A different Identity", "Female","Male","NonBinary or Other"), each=6),emp_status=emp_status_names,
+                                Number=main)
+graph_country_gender<-ggplot(data=graph_country_wise, aes(x=emp_status, y=Number, fill=gender)) +
+  geom_bar(stat="identity") + theme(text = element_text(size=9),axis.text.x = element_text(angle=90, hjust=1)) 
+```
+![altText](https://github.com/avneet14027/Kaggle-DataScience-Survey-Analysis/blob/master/plot_empstatus_gender.png)
+
+#### Age of kagglers around the world
+```R
+df_age<-subset(df, ,select=c("Age","GenderSelect"))
+age_table<-with(df_age,table(Age,GenderSelect))
+
+results_male=c()
+results_female=c()
+results_diff=c()
+results_non_binary=c()
+for(row in 2:nrow(age_table)) {
+  for(col in 2:ncol(age_table)) {
+    if(col==2){
+      #print(table_country_gender[row,col])
+      results_diff<<-append(results_diff,age_table[row,col])
+      #print(results_diff)
+    }
+    if(col==3){
+      results_female<<-append(results_female,age_table[row,col])
+    }
+    if(col==4){
+      results_male<<-append(results_male,age_table[row,col])
+    }
+    if(col==5){
+      results_non_binary<<-append(results_non_binary,age_table[row,col])
+    }
+  }
+}
+
+main<-c()
+main<-append(results_diff,results_female)
+main<-append(main,results_male)
+main<-append(main,results_non_binary)
+
+df2<-as.data.frame(table(df$Age))
+x<-levels(df2$Var1)
+x<-x[-1]
+age_names<-c(x)
+graph_age<- data.frame(gender=rep(c("A different Identity", "Female","Male","NonBinary or Other"), each=83),age=age_names,
+                                Number=main)
+graph_Age<-ggplot(data=graph_age, aes(x=age, y=Number, fill=gender)) +
+  geom_bar(stat="identity") + theme(text = element_text(size=9),axis.text.x = element_text(angle=90, hjust=1)) 
+  ```
+![altText](https://github.com/avneet14027/Kaggle-DataScience-Survey-Analysis/blob/master/plot_age_kagglers.png)
+
